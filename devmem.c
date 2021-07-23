@@ -633,7 +633,7 @@ int main(int argc, char *argv[])
         ret = 122;
         goto free_buf;
     }
-    va.p = mmap(NULL, size_min, PROT_READ | (mode != MODE_RD_ONLY ? 0 : PROT_WRITE),
+    va.p = mmap(NULL, size_min, PROT_READ | (mode == MODE_RD_ONLY ? 0 : PROT_WRITE),
                 MAP_SHARED, fd, offset);
     if (va.p == MAP_FAILED) {
         fprintf(STDERR, "%s: mmap %s offset 0x%llx, size 0x%llx\n", strerror(errno),
