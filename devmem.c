@@ -596,7 +596,7 @@ int main(int argc, char *argv[])
                 goto free_buf;
             }
 
-            for (i = optind; optind + i < argc; i++) {
+            for (i = 0; optind + i < argc; i++) {
                 t = strtoull(argv[i + optind], &end, 0);
                 if (*end) {
                     fprintf(stderr, "Invalid byte sequence [%d] parameter: \"%s\"\n",
