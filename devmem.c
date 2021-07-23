@@ -540,7 +540,12 @@ int main(int argc, char *argv[])
         if (bin_file) {
             ssize_t rv;
             unsigned long long i;
-            uint8_t t[sizeof(buf.p64)];
+            union {
+                uint8_t u8;
+                uint16_t u16;
+                uint32_t u32;
+                uint64_t u64;
+            } t;
             int fd;
             struct stat statbuf = {};
 
@@ -560,7 +565,7 @@ int main(int argc, char *argv[])
                 goto free_buf;
             }
             for (i = 0; i < number; i++) {
-                rv = read(fd, t, width);
+                rv = read(fd, &t, width);
                 if (rv != width) {
                     fprintf(STDERR, "%s: read %s, %llu element, rv %ld\n",
                                     strerror(errno), bin_file, i, (long)rv);
@@ -571,16 +576,16 @@ int main(int argc, char *argv[])
 
                 switch (width) {
                 case WIDTH_BYTE:
-                    buf.p8[i] = *(uint8_t *)t;
+                    buf.p8[i] = t.u8;
                     break;
                 case WIDTH_HALF:
-                    buf.p16[i] = be16toh(*(uint16_t *)t);
+                    buf.p16[i] = be16toh(t.u16);
                     break;
                 case WIDTH_WORD:
-                    buf.p32[i] = be32toh(*(uint32_t *)t);
+                    buf.p32[i] = be32toh(t.u32);
                     break;
                 case WIDTH_DWORD:
-                    buf.p64[i] = be64toh(*(uint64_t *)t);
+                    buf.p64[i] = be64toh(t.u64);
                     break;
                 }
             }
